@@ -250,7 +250,7 @@ RDEPEND="${COMMON_DEPEND}
 	multislot? (
 		app-emulation/wine-desktop-common
 		app-admin/eselect-wine
-		!app-emulation/wine:0[-multislot(-)]
+		!app-emulation/wine[-multislot(-)]
 	)
 	!multislot? (
 		!app-emulation/wine-desktop-common
