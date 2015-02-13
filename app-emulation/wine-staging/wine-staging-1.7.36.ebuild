@@ -47,11 +47,7 @@ else
 fi
 
 LICENSE="LGPL-2.1"
-if [[ ${PN} = wine ]]; then
-SLOT="0"
-else
-	SLOT="$PV"
-fi
+SLOT="$PV"
 IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg +lcms ldap +mono mp3 multislot multiversion ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes s3tc samba scanner selinux +ssl staging test +threads +truetype +udisks v4l +X +xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
@@ -254,7 +250,7 @@ RDEPEND="${COMMON_DEPEND}
 	multislot? (
 		app-emulation/wine-desktop-common
 		app-admin/eselect-wine
-		!app-emulation/wine[-multislot(-)]
+		!app-emulation/wine:0[-multislot(-)]
 	)
 	!multislot? (
 		!app-emulation/wine-desktop-common
@@ -315,7 +311,8 @@ pkg_pretend() {
 
 pkg_setup() {
 	if use multislot; then
-		WINE_VARIANT=${PN#wine-}-$PV
+		WINE_VARIANT=${PN#wine}-$PV
+		WINE_VARIANT=${WINE_VARIANT#-}
 		MY_PREFIX=/usr/lib/wine-${WINE_VARIANT}
 		MY_DATADIR=${MY_PREFIX}
 		MY_MANDIR="${MY_DATADIR}"/man
@@ -332,8 +329,10 @@ src_unpack() {
 	if [[ ${PV} == "9999" ]] ; then
 		git-r3_src_unpack
 		if use staging || use pulseaudio; then
+			local esc_pn
+			esc_pn=${PN//[-+]/_}
+			unset ${esc_pn}_LIVE_REPO ${esc_pn}_LIVE_BRANCH ${esc_pn}_LIVE_COMMIT
 			EGIT_REPO_URI=${STAGING_EGIT_REPO_URI}
-			unset wine_LIVE_REPO;
 			EGIT_CHECKOUT_DIR=${STAGING_DIR} git-r3_src_unpack
 		fi
 	else
