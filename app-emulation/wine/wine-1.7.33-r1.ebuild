@@ -54,6 +54,7 @@ REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	mono? ( abi_x86_32 )
 	pipelight? ( staging )
 	s3tc? ( staging )
+	staging? ( perl )
 	osmesa? ( opengl )" #286560
 
 # FIXME: the test suite is unsuitable for us; many tests require net access
@@ -317,7 +318,6 @@ src_unpack() {
 
 src_prepare() {
 	local md5="$(md5sum server/protocol.def)"
-	local f
 	local PATCHES=(
 		"${FILESDIR}"/${PN}-1.5.26-winegcc.patch #260726
 		"${FILESDIR}"/${PN}-1.4_rc2-multilib-portage.patch #395615
@@ -364,8 +364,10 @@ src_prepare() {
 	fi
 	autotools-utils_src_prepare
 
+	# Modification of the server protocol requires regenerating the server requests
 	if [[ "$(md5sum server/protocol.def)" != "${md5}" ]]; then
 		einfo "server/protocol.def was patched; running tools/make_requests"
+		use perl || die "Running tools/make_requests requires USE=perl"
 		tools/make_requests || die #432348
 	fi
 	sed -i '/^UPDATE_DESKTOP_DATABASE/s:=.*:=true:' tools/Makefile.in || die
@@ -488,7 +490,7 @@ multilib_src_install_all() {
 		insinto /usr/share/wine/mono
 		doins "${DISTDIR}"/wine-mono-${MV}.msi
 	fi
-	if ! use perl ; then
+	if ! use perl ; then # winedump calls function_grep.pl, and winemaker is a perl script
 		rm "${D}"usr/bin/{wine{dump,maker},function_grep.pl} "${D}"usr/share/man/man1/wine{dump,maker}.1 || die
 	fi
 
