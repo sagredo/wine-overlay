@@ -26,6 +26,7 @@ fi
 GV="2.34"
 MV="4.5.4"
 STAGING_P="wine-staging-${PV}"
+STAGING_DIR="${WORKDIR}/${STAGING_P}"
 WINE_GENTOO="wine-gentoo-2013.06.24"
 DESCRIPTION="Free implementation of Windows(tm) on Unix"
 HOMEPAGE="http://www.winehq.org/"
@@ -304,7 +305,7 @@ src_unpack() {
 		if use staging || use pulseaudio; then
 			EGIT_REPO_URI=${STAGING_EGIT_REPO_URI}
 			unset ${PN}_LIVE_REPO;
-			EGIT_CHECKOUT_DIR=${WORKDIR}/${STAGING_P} git-r3_src_unpack
+			EGIT_CHECKOUT_DIR=${STAGING_DIR} git-r3_src_unpack
 		fi
 	else
 		unpack ${MY_P}.tar.bz2
@@ -345,22 +346,22 @@ src_prepare() {
 		ewarn "unless you can reproduce them with USE=-staging"
 
 		# epatch doesn't support binary patches and we ship our own pulse patches
-		emake -C "${WORKDIR}/${STAGING_P}/patches" \
+		emake -C "${STAGING_DIR}/patches" \
 			$(echo ${STAGING_MAKE_ARGS}) \
 		    series
 
-		PATCHES+=( $(sed -e "s:^:${WORKDIR}/${STAGING_P}/patches/:" \
-		    "${WORKDIR}/${STAGING_P}/patches/series") )
+		PATCHES+=( $(sed -e "s:^:${STAGING_DIR}/patches/:" \
+		    "${STAGING_DIR}/patches/series") )
 
 		# epatch doesn't support binary patches
 		ebegin "Applying Wine-Staging font patches"
-		for f in "${WORKDIR}/${STAGING_P}/patches/fonts-Missing_Fonts"/*.patch; do
-			"../${STAGING_P}/debian/tools/gitapply.sh" < "${f}" \
+		for f in "${STAGING_DIR}/patches/fonts-Missing_Fonts"/*.patch; do
+			"${STAGING_DIR}/debian/tools/gitapply.sh" < "${f}" \
 			    || die "Failed to apply ${f}"
 		done
 		eend
 	elif use pulseaudio; then
-		PATCHES+=( "../${STAGING_P}/patches/winepulse-PulseAudio_Support"/*.patch )
+		PATCHES+=( "${STAGING_DIR}/patches/winepulse-PulseAudio_Support"/*.patch )
 	fi
 	autotools-utils_src_prepare
 
