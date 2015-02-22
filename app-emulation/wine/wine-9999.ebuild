@@ -48,7 +48,7 @@ fi
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg +lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes s3tc samba scanner selinux +ssl staging test +threads +truetype +udisks v4l +X +xcomposite xinerama +xml"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg +lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes s3tc samba scanner selinux +ssl staging test +threads +truetype +udisks v4l vaapi +X +xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -56,6 +56,7 @@ REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	pipelight? ( staging )
 	s3tc? ( staging )
 	staging? ( perl )
+	vaapi? ( staging )
 	osmesa? ( opengl )" #286560
 
 # FIXME: the test suite is unsuitable for us; many tests require net access
@@ -97,13 +98,13 @@ NATIVE_DEPEND="
 	osmesa? ( media-libs/mesa[osmesa] )
 	pcap? ( net-libs/libpcap )
 	staging? ( sys-apps/attr )
-	s3tc? ( media-libs/libtxc_dxtn )
 	pulseaudio? ( media-sound/pulseaudio )
 	xml? ( dev-libs/libxml2 dev-libs/libxslt )
 	scanner? ( media-gfx/sane-backends:= )
 	ssl? ( net-libs/gnutls:= )
 	png? ( media-libs/libpng:0= )
 	v4l? ( media-libs/libv4l )
+	vaapi? ( x11-libs/libva[X] )
 	xcomposite? ( x11-libs/libXcomposite )"
 
 COMMON_DEPEND="
@@ -214,7 +215,6 @@ COMMON_DEPEND="
 				app-emulation/emul-linux-x86-baselibs[development,-abi_x86_32(-)]
 				>=sys-apps/attr-2.4.47-r1[abi_x86_32(-)]
 			) )
-			s3tc? ( >=media-libs/libtxc_dxtn-1.0.1-r1[abi_x86_32(-)] )
 			xml? ( || (
 				>=app-emulation/emul-linux-x86-baselibs-20131008[development,-abi_x86_32(-)]
 				(
@@ -238,6 +238,7 @@ COMMON_DEPEND="
 				app-emulation/emul-linux-x86-medialibs[development,-abi_x86_32(-)]
 				>=media-libs/libv4l-0.9.5[abi_x86_32(-)]
 			) )
+			vaapi? ( x11-libs/libva[X,abi_x86_32(-)] )
 			xcomposite? ( || (
 				app-emulation/emul-linux-x86-xlibs[development,-abi_x86_32(-)]
 				>=x11-libs/libXcomposite-0.4.4-r1[abi_x86_32(-)]
@@ -248,6 +249,7 @@ COMMON_DEPEND="
 RDEPEND="${COMMON_DEPEND}
 	dos? ( games-emulation/dosbox )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
+	s3tc? ( >=media-libs/libtxc_dxtn-1.0.1-r1[${MULTILIB_USEDEP}] )
 	samba? ( >=net-fs/samba-3.0.25 )
 	selinux? ( sec-policy/selinux-wine )
 	udisks? ( sys-fs/udisks:2 )
@@ -424,7 +426,7 @@ multilib_src_configure() {
 	use pulseaudio || use staging && myconf+=( $(use_with pulseaudio pulse) )
 	use staging && myconf+=(
 		--with-xattr
-		$(use_with s3tc txc_dxtn)
+		$(use_with vaapi va)
 	)
 
 	local PKG_CONFIG AR RANLIB
