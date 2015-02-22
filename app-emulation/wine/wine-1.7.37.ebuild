@@ -48,7 +48,7 @@ fi
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg +lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes s3tc samba scanner selinux +ssl staging test +threads +truetype +udisks v4l +X +xcomposite xinerama +xml"
+IUSE="+abi_x86_32 +abi_x86_64 +alsa capi cups custom-cflags dos elibc_glibc +fontconfig +gecko gphoto2 gsm gstreamer +jpeg +lcms ldap +mono mp3 ncurses netapi nls odbc openal opencl +opengl osmesa oss +perl pcap pipelight +png +prelink pulseaudio +realtime +run-exes s3tc samba scanner selinux +ssl staging test +threads +truetype +udisks v4l vaapi +X +xcomposite xinerama +xml"
 REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	test? ( abi_x86_32 )
 	elibc_glibc? ( threads )
@@ -56,6 +56,7 @@ REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	pipelight? ( staging )
 	s3tc? ( staging )
 	staging? ( perl )
+	vaapi? ( staging )
 	osmesa? ( opengl )" #286560
 
 # FIXME: the test suite is unsuitable for us; many tests require net access
@@ -104,6 +105,7 @@ NATIVE_DEPEND="
 	ssl? ( net-libs/gnutls:= )
 	png? ( media-libs/libpng:0= )
 	v4l? ( media-libs/libv4l )
+	vaapi? ( x11-libs/libva[X] )
 	xcomposite? ( x11-libs/libXcomposite )"
 
 COMMON_DEPEND="
@@ -238,6 +240,7 @@ COMMON_DEPEND="
 				app-emulation/emul-linux-x86-medialibs[development,-abi_x86_32(-)]
 				>=media-libs/libv4l-0.9.5[abi_x86_32(-)]
 			) )
+			vaapi? ( x11-libs/libva[X,abi_x86_32(-)] )
 			xcomposite? ( || (
 				app-emulation/emul-linux-x86-xlibs[development,-abi_x86_32(-)]
 				>=x11-libs/libXcomposite-0.4.4-r1[abi_x86_32(-)]
@@ -425,6 +428,7 @@ multilib_src_configure() {
 	use staging && myconf+=(
 		--with-xattr
 		$(use_with s3tc txc_dxtn)
+		$(use_with vaapi va)
 	)
 
 	local PKG_CONFIG AR RANLIB
