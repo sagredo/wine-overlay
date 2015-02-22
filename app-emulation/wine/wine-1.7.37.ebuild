@@ -98,7 +98,6 @@ NATIVE_DEPEND="
 	osmesa? ( media-libs/mesa[osmesa] )
 	pcap? ( net-libs/libpcap )
 	staging? ( sys-apps/attr )
-	s3tc? ( media-libs/libtxc_dxtn )
 	pulseaudio? ( media-sound/pulseaudio )
 	xml? ( dev-libs/libxml2 dev-libs/libxslt )
 	scanner? ( media-gfx/sane-backends:= )
@@ -216,7 +215,6 @@ COMMON_DEPEND="
 				app-emulation/emul-linux-x86-baselibs[development,-abi_x86_32(-)]
 				>=sys-apps/attr-2.4.47-r1[abi_x86_32(-)]
 			) )
-			s3tc? ( >=media-libs/libtxc_dxtn-1.0.1-r1[abi_x86_32(-)] )
 			xml? ( || (
 				>=app-emulation/emul-linux-x86-baselibs-20131008[development,-abi_x86_32(-)]
 				(
@@ -251,6 +249,7 @@ COMMON_DEPEND="
 RDEPEND="${COMMON_DEPEND}
 	dos? ( games-emulation/dosbox )
 	perl? ( dev-lang/perl dev-perl/XML-Simple )
+	s3tc? ( >=media-libs/libtxc_dxtn-1.0.1-r1[${MULTILIB_USEDEP}] )
 	samba? ( >=net-fs/samba-3.0.25 )
 	selinux? ( sec-policy/selinux-wine )
 	udisks? ( sys-fs/udisks:2 )
@@ -427,7 +426,6 @@ multilib_src_configure() {
 	use pulseaudio || use staging && myconf+=( $(use_with pulseaudio pulse) )
 	use staging && myconf+=(
 		--with-xattr
-		$(use_with s3tc txc_dxtn)
 		$(use_with vaapi va)
 	)
 
