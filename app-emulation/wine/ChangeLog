@@ -2,6 +2,11 @@
 # Copyright 1999-2015 Gentoo Foundation; Distributed under the GPL v2
 # $Header: $
 
+  08 Mar 2015; NP-Hardass <np.hardass@gmail.com>
+  +files/wine-1.7.38-gstreamer-v5-staging.patch,
+  +files/wine-1.7.38-gstreamer-v5.patch, wine-9999.ebuild:
+  Update to gstreamer v5, and resolve application failure Gentoo Bug #542184
+
   22 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-9999.ebuild:
   Update 9999 with changes from 1.7.37
 

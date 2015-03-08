@@ -336,8 +336,12 @@ src_prepare() {
 		# See http://bugs.winehq.org/show_bug.cgi?id=30557
 		ewarn "Applying experimental patch to fix GStreamer support. Note that"
 		ewarn "this patch has been reported to cause crashes in certain games."
-
-		PATCHES+=( "${FILESDIR}/${PN}-1.7.28-gstreamer-v4.patch" )
+		# Wine-Staging introduced a patch after 1.7.37 which breaks this, so we have 2 patches
+		if use staging; then
+			PATCHES+=( "${FILESDIR}/${PN}-1.7.38-gstreamer-v5-staging.patch" )
+		else
+			PATCHES+=( "${FILESDIR}/${PN}-1.7.38-gstreamer-v5.patch" )
+		fi
 	fi
 	if use staging; then
 		ewarn "Applying the unofficial Wine-Staging patchset which is unsupported"
