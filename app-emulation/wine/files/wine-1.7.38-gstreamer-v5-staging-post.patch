@@ -33,18 +33,18 @@ index 936cabe..98e679e 100755
      TEB *teb;
  #endif
  
-@@ -495,6 +496,11 @@ static void exit_thread_common( int status )
-             signal_free_thread( teb );
-         }
-     }
+@@ -498,6 +499,11 @@ static void exit_thread_common( int status )
+ #else
+     reap_thread(NtCurrentTeb());
+ #endif
 +
 +    sigemptyset( &sigset );
 +    sigaddset( &sigset, SIGQUIT );
 +    pthread_sigmask( SIG_BLOCK, &sigset, NULL );
 +    if (interlocked_xchg_add( &nb_threads, -1 ) <= 1) _exit( status );
- #else
-     reap_thread(NtCurrentTeb());
- #endif
+
+    close( ntdll_get_thread_data()->wait_fd[0] );
+    close( ntdll_get_thread_data()->wait_fd[1] );
 -- 
 2.3.1
 
