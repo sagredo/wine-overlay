@@ -8,27 +8,95 @@
   wine-9999.ebuild:
   Version bump for 1.7.37, new flag for staging vaapi, and s3tc is now rdep only
 
+  11 Feb 2015; <gentoo-wine@eroen.eu> wine-1.7.35.ebuild, wine-1.7.36.ebuild:
+  Apply multislot/multiversion changes to release versions
+
+  10 Feb 2015; <gentoo-wine@eroen.eu> wine-9999.ebuild, metadata.xml:
+  Add multiversion use flag for installing multiple versions of the same
+  package
+
+  09 Feb 2015; <gentoo-wine@eroen.eu> wine-9999.ebuild:
+  wine-9999 - Make $PN explicit
+  This simplifies creating addidional variant packages.
+
+  26 Jan 2015; <gentoo-wine@eroen.eu> wine-9999.ebuild, metadata.xml:
+  Add multislot use flag. This moves the installed files away from the default
+  location and wraps the binaries with a script, enabling eselect wine to
+  manage
+  the active version/variant.
+
+  26 Jan 2015; <gentoo-wine@eroen.eu> wine-9999.ebuild:
+  Cleanup. Make implicit paths explicit in preparation for SLOTing.
+
+  12 Feb 2015; NP-Hardass <np.hardass@gmail.com>
+  +files/wine-gentoo-2013.06.24-xdg-dir-fix.patch, wine-1.7.33-r1.ebuild,
+  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
+  xdg menu fix, github issue #1
+
   12 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r1.ebuild,
   wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
   set lcms and xcomposite as default, github issue #3
 
-  12 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r1.ebuild,
-  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild:
-  xdg menu fix, github issue #1
+*wine-1.7.36 (09 Feb 2015)
 
-*wine-1.7.36 (08 Feb 2015)
-
-  08 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.36.ebuild:
+  09 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.36.ebuild:
   Version bump to 1.7.36
 
-  04 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-9999.ebuild:
-  Testing wine-desktop-common and bugfix for wine-overlay #1
+  12 Feb 2015; NP-Hardass <np.hardass@gmail.com>
+  +files/wine-gentoo-2013.06.24-xdg-dir-fix.patch, wine-1.7.33-r1.ebuild,
+  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
+  xdg menu fix, github issue #1
 
-  04 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r1.ebuild:
-  Update 1.7.33's dependencies to the new dependencies
+  12 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r1.ebuild,
+  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
+  set lcms and xcomposite as default, github issue #3
 
-  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r1.ebuild:
-  Update perl USE flag handling
+*wine-1.7.36 (09 Feb 2015)
+
+  09 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.36.ebuild:
+  Version bump to 1.7.36
+
+  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.34.ebuild,
+  wine-1.7.35.ebuild, wine-9999.ebuild:
+  Include perl USE flag improvements
+
+  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.35.ebuild:
+  Forgot to include 1.7.35 in the revert.  Thanks slackner
+
+  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.34.ebuild,
+  wine-9999.ebuild:
+  Revert wine to use old dependency code, because new dependency code doesn't
+  work well with emul-linux packages See: Issue #1 Thanks to Aliekezhi for
+  pointing it out.
+
+*wine-1.7.37 (22 Feb 2015)
+
+  22 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.37.ebuild,
+  wine-9999.ebuild:
+  Version bump for 1.7.37, new flag for staging vaapi, and s3tc is now rdep only
+
+  12 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r2.ebuild,
+  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
+  set lcms and xcomposite as default, github issue #3
+
+  12 Feb 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r2.ebuild,
+  wine-1.7.34.ebuild, wine-1.7.35.ebuild, wine-1.7.36.ebuild, wine-9999.ebuild:
+  xdg menu fix, github issue #1
+
+*wine-1.7.36 (09 Feb 2015)
+
+  09 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.36.ebuild:
+  Version bump to 1.7.36
+
+  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> wine-1.7.33-r2.ebuild:
+  Improved perl USE flag handling
+
+*wine-1.7.33-r2 (26 Jan 2015)
+
+  26 Jan 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.33-r2.ebuild,
+  -wine-1.7.33-r1.ebuild, metadata.xml, wine-1.7.34.ebuild, wine-1.7.35.ebuild,
+  wine-9999.ebuild:
+  Full D3D9 support, tested with and without staging 1.7.35, 9999
 
 *wine-1.7.35 (24 Jan 2015)
 
