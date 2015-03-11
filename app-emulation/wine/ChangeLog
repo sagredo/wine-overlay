@@ -2,6 +2,14 @@
 # Copyright 1999-2015 Gentoo Foundation; Distributed under the GPL v2
 # $Header: $
 
+*wine-1.7.38 (11 Mar 2015)
+
+  11 Mar 2015; NP-Hardass <np.hardass@gmail.com>
+  +files/wine-1.7.38-gstreamer-v5-staging-post.patch,
+  +files/wine-1.7.38-gstreamer-v5-staging-pre.patch, +wine-1.7.38.ebuild,
+  wine-9999.ebuild:
+  Version bump to 1.7.38 and incorporate changes from upstream Gentoo
+
 *wine-1.7.37 (22 Feb 2015)
 
   22 Feb 2015; NP-Hardass <np.hardass@gmail.com> +wine-1.7.37.ebuild,
