@@ -1,1 +1,1 @@
-../wine-vanilla/wine-9999.ebuild
+../wine/wine-9999.ebuild

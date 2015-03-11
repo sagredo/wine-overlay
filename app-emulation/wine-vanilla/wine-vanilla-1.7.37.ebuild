@@ -1,1 +1,1 @@
-../wine-vanilla/wine-1.7.37.ebuild
+../wine/wine-1.7.37.ebuild
