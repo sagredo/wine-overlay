@@ -13,6 +13,7 @@ if [[ ${PV} == "99999999" ]] ; then
 else
 	SRC_URI="https://github.com/Winetricks/${PN}/archive/${PV}.zip"
 	KEYWORDS="~amd64 ~x86"
+#	S="${WORKDIR}"
 fi
 wtg=winetricks-gentoo-2012.11.24
 SRC_URI="${SRC_URI}
