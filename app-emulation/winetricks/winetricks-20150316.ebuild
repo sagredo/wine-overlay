@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-emulation/winetricks/winetricks-99999999.ebuild,v 1.12 2015/03/07 22:22:23 tetromino Exp $
+# $Header: $
 
 EAPI=5
 
@@ -13,7 +13,6 @@ if [[ ${PV} == "99999999" ]] ; then
 else
 	SRC_URI="https://github.com/Winetricks/${PN}/archive/${PV}.zip"
 	KEYWORDS="~amd64 ~x86"
-#	S="${WORKDIR}"
 fi
 wtg=winetricks-gentoo-2012.11.24
 SRC_URI="${SRC_URI}
