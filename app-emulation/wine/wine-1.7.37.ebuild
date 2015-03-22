@@ -27,7 +27,8 @@ GV="2.34"
 MV="4.5.4"
 STAGING_P="wine-staging-${PV}"
 STAGING_DIR="${WORKDIR}/${STAGING_P}"
-WINE_GENTOO="wine-gentoo-2013.06.24"
+WINE_GENTOO="wine-gentoo-2015.03.07"
+GST_P="wine-1.7.34-gstreamer-v5"
 DESCRIPTION="Free implementation of Windows(tm) on Unix"
 HOMEPAGE="http://www.winehq.org/"
 SRC_URI="${SRC_URI}
@@ -36,6 +37,7 @@ SRC_URI="${SRC_URI}
 		abi_x86_64? ( mirror://sourceforge/${PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi )
 	)
 	mono? ( mirror://sourceforge/${PN}/Wine%20Mono/${MV}/wine-mono-${MV}.msi )
+	gstreamer? ( http://dev.gentoo.org/~tetromino/distfiles/${PN}/${GST_P}.patch.bz2 )
 	http://dev.gentoo.org/~tetromino/distfiles/${PN}/${WINE_GENTOO}.tar.bz2"
 
 if [[ ${PV} == "9999" ]] ; then
@@ -55,7 +57,6 @@ REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	mono? ( abi_x86_32 )
 	pipelight? ( staging )
 	s3tc? ( staging )
-	staging? ( perl )
 	vaapi? ( staging )
 	osmesa? ( opengl )" #286560
 
@@ -255,8 +256,10 @@ RDEPEND="${COMMON_DEPEND}
 	udisks? ( sys-fs/udisks:2 )
 	pulseaudio? ( realtime? ( sys-auth/rtkit ) )"
 
+# tools/make_requests requires perl
 DEPEND="${COMMON_DEPEND}
 	amd64? ( abi_x86_32? ( !abi_x86_64? ( ${NATIVE_DEPEND} ) ) )
+	staging? ( dev-lang/perl dev-perl/XML-Simple )
 	X? (
 		x11-proto/inputproto
 		x11-proto/xextproto
@@ -315,6 +318,7 @@ src_unpack() {
 	fi
 
 	unpack "${WINE_GENTOO}.tar.bz2"
+	use gstreamer && unpack "${GST_P}.patch.bz2"
 
 	l10n_find_plocales_changes "${S}/po" "" ".po"
 }
@@ -328,16 +332,12 @@ src_prepare() {
 		"${FILESDIR}"/${PN}-1.6-memset-O3.patch #480508
 	)
 
-	pushd "${WORKDIR}/${WINE_GENTOO}" > /dev/null
-	epatch "${FILESDIR}/${WINE_GENTOO}-xdg-dir-fix.patch" #wine-overlay github #1
-	popd > /dev/null
-
 	if use gstreamer; then
 		# See http://bugs.winehq.org/show_bug.cgi?id=30557
 		ewarn "Applying experimental patch to fix GStreamer support. Note that"
 		ewarn "this patch has been reported to cause crashes in certain games."
 
-		PATCHES+=( "${FILESDIR}/${PN}-1.7.28-gstreamer-v4.patch" )
+		PATCHES+=( "${WORKDIR}/${GST_P}.patch" )
 	fi
 	if use staging; then
 		ewarn "Applying the unofficial Wine-Staging patchset which is unsupported"
@@ -363,7 +363,6 @@ src_prepare() {
 	# Modification of the server protocol requires regenerating the server requests
 	if [[ "$(md5sum server/protocol.def)" != "${md5}" ]]; then
 		einfo "server/protocol.def was patched; running tools/make_requests"
-		use perl || die "Running tools/make_requests requires USE=perl"
 		tools/make_requests || die #432348
 	fi
 	sed -i '/^UPDATE_DESKTOP_DATABASE/s:=.*:=true:' tools/Makefile.in || die
@@ -423,7 +422,9 @@ multilib_src_configure() {
 		$(use_with xml xslt)
 	)
 
-	use pulseaudio || use staging && myconf+=( $(use_with pulseaudio pulse) )
+	if use pulseaudio || use staging; then
+		myconf+=( $(use_with pulseaudio pulse) )
+	fi
 	use staging && myconf+=(
 		--with-xattr
 		$(use_with vaapi va)
