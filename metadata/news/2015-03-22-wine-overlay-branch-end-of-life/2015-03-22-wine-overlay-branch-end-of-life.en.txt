@@ -1,0 +1,21 @@
+Title: Branch End of Life
+Author: NP-Hardass <np.hardass@gmail.com>
+Content-Type: text/plain
+Posted: 2015-03-22
+Revision: 1
+News-Item-Format: 1.0
+
+Thank you for faithfully using wine-overlay!
+
+At this point, the features from all of the branches are either in the process
+of being integrated into the main tree or have already been integrated into
+the sister overlay, wine-a-holics.
+
+As such, if you want to continue using the features of this branch
+without delay, please switch to the wine-a-holics overlay.  
+
+Keep an eye out on the packages in the main tree and wine-overlay, as they
+may be getting some of these features soon.
+
+For more information, if you have questions, or if you'd like help, don't 
+hesitate to stop by the #gentoo-wine channel on Freenode's IRC network.
