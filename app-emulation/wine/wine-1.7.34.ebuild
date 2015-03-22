@@ -31,6 +31,7 @@ D3D9_P="wine-d3d9-${PV}"
 D3D9_DIR="${WORKDIR}/wine-d3d9-patches-${D3D9_P}"
 WDC_V="20150204"
 WINE_DESKTOP_COMMON_P="wine-desktop-common-${WDC_V}"
+GST_P="wine-1.7.34-gstreamer-v5"
 DESCRIPTION="Free implementation of Windows(tm) on Unix"
 HOMEPAGE="http://www.winehq.org/"
 SRC_URI="${SRC_URI}
@@ -39,6 +40,7 @@ SRC_URI="${SRC_URI}
 		abi_x86_64? ( mirror://sourceforge/${PN}/Wine%20Gecko/${GV}/wine_gecko-${GV}-x86_64.msi )
 	)
 	mono? ( mirror://sourceforge/${PN}/Wine%20Mono/${MV}/wine-mono-${MV}.msi )
+	gstreamer? ( http://dev.gentoo.org/~tetromino/distfiles/${PN}/${GST_P}.patch.bz2 )
 	https://github.com/NP-Hardass/wine-desktop-common/archive/${WDC_V}.tar.gz -> ${WINE_DESKTOP_COMMON_P}.tar.gz"
 
 if [[ ${PV} == "9999" ]] ; then
@@ -60,7 +62,6 @@ REQUIRED_USE="|| ( abi_x86_32 abi_x86_64 )
 	mono? ( abi_x86_32 )
 	pipelight? ( staging )
 	s3tc? ( staging )
-	staging? ( perl )
 	osmesa? ( opengl )" #286560
 
 # FIXME: the test suite is unsuitable for us; many tests require net access
@@ -142,7 +143,9 @@ RDEPEND="${COMMON_DEPEND}
 	udisks? ( sys-fs/udisks:2 )
 	pulseaudio? ( realtime? ( sys-auth/rtkit ) )"
 
+# tools/make_requests requires perl
 DEPEND="${COMMON_DEPEND}
+	staging? ( dev-lang/perl dev-perl/XML-Simple )
 	X? (
 		x11-proto/inputproto
 		x11-proto/xextproto
@@ -207,6 +210,7 @@ src_unpack() {
 	fi
 
 	unpack "${WINE_DESKTOP_COMMON_P}.tar.gz"
+	use gstreamer && unpack "${GST_P}.patch.bz2"
 
 	l10n_find_plocales_changes "${S}/po" "" ".po"
 }
@@ -225,7 +229,7 @@ src_prepare() {
 		ewarn "Applying experimental patch to fix GStreamer support. Note that"
 		ewarn "this patch has been reported to cause crashes in certain games."
 
-		PATCHES+=( "${FILESDIR}/${PN}-1.7.28-gstreamer-v4.patch" )
+		PATCHES+=( "${WORKDIR}/${GST_P}.patch" )
 	fi
 	if use staging; then
 		ewarn "Applying the unofficial Wine-Staging patchset which is unsupported"
@@ -259,7 +263,6 @@ src_prepare() {
 	# Modification of the server protocol requires regenerating the server requests
 	if [[ "$(md5sum server/protocol.def)" != "${md5}" ]]; then
 		einfo "server/protocol.def was patched; running tools/make_requests"
-		use perl || die "Running tools/make_requests requires USE=perl"
 		tools/make_requests || die #432348
 	fi
 	sed -i '/^UPDATE_DESKTOP_DATABASE/s:=.*:=true:' tools/Makefile.in || die
@@ -319,7 +322,9 @@ multilib_src_configure() {
 		$(use_with xml xslt)
 	)
 
-	use pulseaudio || use staging && myconf+=( $(use_with pulseaudio pulse) )
+	if use pulseaudio || use staging; then
+		myconf+=( $(use_with pulseaudio pulse) )
+	fi
 	use staging && myconf+=(
 		--with-xattr
 		$(use_with s3tc txc_dxtn)
